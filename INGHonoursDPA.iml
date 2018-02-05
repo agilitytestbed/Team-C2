@@ -74,5 +74,8 @@
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:4.3.13.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.196" level="project" />
+    <orderEntry type="library" name="Maven: com.github.ulisesbocchio:jasypt-spring-boot-starter:1.18" level="project" />
+    <orderEntry type="library" name="Maven: com.github.ulisesbocchio:jasypt-spring-boot:1.18" level="project" />
+    <orderEntry type="library" name="Maven: org.jasypt:jasypt:1.9.2" level="project" />
   </component>
 </module>
