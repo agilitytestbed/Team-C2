@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -15,10 +16,6 @@ public class TransactionCategory implements Serializable {
     @NotBlank
     private Long id;
 
-    @Id
-    @NotBlank
-    private String sessionId;
-
     @NotBlank
     private String name;
 
@@ -26,7 +23,23 @@ public class TransactionCategory implements Serializable {
 
     }
 
-    private TransactionCategory(Long id, String sessionId, String name) {
+    public TransactionCategory(Long id, String sessionId, String name) {
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
