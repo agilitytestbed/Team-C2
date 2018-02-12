@@ -1,10 +1,8 @@
 package nl.ing.honours.categories;
 
-import org.hibernate.validator.constraints.NotBlank;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -13,8 +11,9 @@ import java.io.Serializable;
 public class Category implements Serializable {
 
     @Id
+    @Column(insertable = false, updatable = false, nullable = false)
     private Long id;
-
+    @Column(nullable = false)
     private String name;
 
     public Category() {
@@ -23,6 +22,11 @@ public class Category implements Serializable {
 
     public Category(Long id, String sessionId, String name) {
 
+    }
+
+    @Override
+    public String toString() {
+        return this.id + " " + this.name;
     }
 
     public Long getId() {
