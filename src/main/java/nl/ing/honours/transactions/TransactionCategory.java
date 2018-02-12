@@ -1,4 +1,4 @@
-package nl.ing.honours;
+package nl.ing.honours.transactions;
 
 import org.hibernate.validator.constraints.NotBlank;
 

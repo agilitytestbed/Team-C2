@@ -1,5 +1,7 @@
-package nl.ing.honours;
+package nl.ing.honours.transactions;
 
+import nl.ing.honours.AutoConfiguration;
+import nl.ing.honours.categories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;

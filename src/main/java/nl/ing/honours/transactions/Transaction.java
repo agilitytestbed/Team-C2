@@ -1,8 +1,7 @@
-package nl.ing.honours;
+package nl.ing.honours.transactions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
