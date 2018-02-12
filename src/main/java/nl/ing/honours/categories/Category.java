@@ -1,14 +1,18 @@
-package nl.ing.honours.transactions;
+package nl.ing.honours.categories;
 
+import nl.ing.honours.transactions.Transaction;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
 @Table(name = "Category")
 @Entity
-public class TransactionCategory implements Serializable {
+public class Category implements Serializable {
 
     @Id
     private Long id;
@@ -18,11 +22,11 @@ public class TransactionCategory implements Serializable {
     @OneToMany(mappedBy = "category")
     private List<Transaction> transactions;
 
-    public TransactionCategory() {
+    public Category() {
 
     }
 
-    public TransactionCategory(Long id, String sessionId, String name) {
+    public Category(Long id, String sessionId, String name) {
 
     }
 

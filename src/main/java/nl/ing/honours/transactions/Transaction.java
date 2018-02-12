@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.gson.annotations.SerializedName;
 import nl.ing.honours.sessions.Session;
+import nl.ing.honours.categories.Category;
+import nl.ing.honours.sessions.Session;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -33,12 +35,17 @@ public class Transaction implements Serializable {
 
     @OneToMany
     @JsonDeserialize()
-    private List<TransactionCategory> category;
+    private List<Category> category;
 
     @ManyToOne
     private Session session;
 
     public Transaction() {
+
+    }
+
+    public Transaction(Long id, String sessionId, Date Date, Double amount, String externalIban, String type,
+                       Category category) {
 
     }
 
@@ -82,11 +89,11 @@ public class Transaction implements Serializable {
         this.type = type;
     }
 
-    public List<TransactionCategory> getCategory() {
+    public List<Category> getCategory() {
         return category;
     }
 
-    public void setCategory(List<TransactionCategory> category) {
+    public void setCategory(List<Category> category) {
         this.category = category;
     }
 

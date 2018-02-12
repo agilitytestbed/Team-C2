@@ -4,6 +4,7 @@ import nl.ing.honours.AutoConfiguration;
 import nl.ing.honours.categories.CategoryRepository;
 import nl.ing.honours.sessions.Session;
 import nl.ing.honours.sessions.SessionRepository;
+import nl.ing.honours.categories.Category;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.*;
 
@@ -45,7 +48,7 @@ public class TransactionController {
         Double amount = transaction.getAmount();
         String iban = transaction.getIban();
         String type = transaction.getType();
-        List<TransactionCategory> categories = transaction.getCategory();
+        List<Category> categories = transaction.getCategory();
 
         sessionRepository.save(new Session(sessionId));
         Session session = sessionRepository.findFirstBySession(sessionId);
@@ -60,7 +63,7 @@ public class TransactionController {
         if (categories != null) {
             categories.removeIf(c -> c.getId() == null);
             categories.removeIf(c -> c.getName() == null);
-            for (TransactionCategory c : categories) {
+            for (Category c : categories) {
                 if (c.getId() != null && !categoryRepository.exists(c.getId())) {
                     return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
                 }
