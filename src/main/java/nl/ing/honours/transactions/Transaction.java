@@ -1,12 +1,15 @@
 package nl.ing.honours.transactions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.gson.annotations.SerializedName;
+import nl.ing.honours.sessions.Session;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "Transaction")
 @Entity
@@ -28,16 +31,14 @@ public class Transaction implements Serializable {
 
     private String type;
 
+    @OneToMany
+    @JsonDeserialize()
+    private List<TransactionCategory> category;
+
     @ManyToOne
-    @JoinColumn(name = "category", referencedColumnName = "id")
-    private TransactionCategory category;
+    private Session session;
 
     public Transaction() {
-
-    }
-
-    public Transaction(Long id, String sessionId, Date Date, Double amount, String externalIban, String type,
-                       TransactionCategory category) {
 
     }
 
@@ -81,14 +82,21 @@ public class Transaction implements Serializable {
         this.type = type;
     }
 
-    public TransactionCategory getCategory() {
+    public List<TransactionCategory> getCategory() {
         return category;
     }
 
-    public void setCategory(TransactionCategory category) {
+    public void setCategory(List<TransactionCategory> category) {
         this.category = category;
     }
 
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
 }
 
 
