@@ -2,6 +2,7 @@ package nl.ing.honours.transactions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
+import nl.ing.honours.categories.Category;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -30,14 +31,14 @@ public class Transaction implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "category", referencedColumnName = "id")
-    private TransactionCategory category;
+    private Category category;
 
     public Transaction() {
 
     }
 
     public Transaction(Long id, String sessionId, Date Date, Double amount, String externalIban, String type,
-                       TransactionCategory category) {
+                       Category category) {
 
     }
 
@@ -81,11 +82,11 @@ public class Transaction implements Serializable {
         this.type = type;
     }
 
-    public TransactionCategory getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(TransactionCategory category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

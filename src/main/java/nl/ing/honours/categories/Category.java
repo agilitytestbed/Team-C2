@@ -1,4 +1,4 @@
-package nl.ing.honours.transactions;
+package nl.ing.honours.categories;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -10,18 +10,18 @@ import java.io.Serializable;
 
 @Table(name = "Category")
 @Entity
-public class TransactionCategory implements Serializable {
+public class Category implements Serializable {
 
     @Id
     private Long id;
 
     private String name;
 
-    public TransactionCategory() {
+    public Category() {
 
     }
 
-    public TransactionCategory(Long id, String sessionId, String name) {
+    public Category(Long id, String sessionId, String name) {
 
     }
 

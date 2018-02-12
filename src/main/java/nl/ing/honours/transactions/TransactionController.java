@@ -2,6 +2,7 @@ package nl.ing.honours.transactions;
 
 import nl.ing.honours.AutoConfiguration;
 import nl.ing.honours.categories.CategoryRepository;
+import nl.ing.honours.categories.Category;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -38,7 +39,7 @@ public class TransactionController {
         Double amount = transaction.getAmount();
         String iban = transaction.getIban();
         String type = transaction.getType();
-        TransactionCategory category = transaction.getCategory();
+        Category category = transaction.getCategory();
         Long cat_id = category.getId();
         String cat_name = category.getName();
 
