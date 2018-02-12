@@ -13,10 +13,8 @@ import java.io.Serializable;
 public class TransactionCategory implements Serializable {
 
     @Id
-    @NotBlank
     private Long id;
 
-    @NotBlank
     private String name;
 
     public TransactionCategory() {

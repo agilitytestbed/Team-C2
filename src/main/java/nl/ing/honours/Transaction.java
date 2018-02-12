@@ -15,22 +15,18 @@ public class Transaction implements Serializable {
 
     @Id
     @Column(insertable = false, updatable = false)
-    @NotBlank
     private Long id;
 
-    @NotBlank
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date date;
 
-    @NotBlank
     private Double amount;
 
     @SerializedName("external-iban")
     @JsonProperty("external-iban")
     private String iban;
 
-    @NotBlank
     private String type;
 
     @ManyToOne
