@@ -11,9 +11,9 @@ import java.io.Serializable;
 public class Category implements Serializable {
 
     @Id
-    @Column(insertable = false, updatable = false, nullable = false)
+    @Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "name", unique = false, nullable = true, insertable = true, updatable = true)
     private String name;
 
     public Category() {

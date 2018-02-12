@@ -18,13 +18,13 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getCategories() {
         // 200
         return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity createCategory(@RequestBody Category category) {
         if (!categoryRepository.exists(category.getId())) {
             // 201
