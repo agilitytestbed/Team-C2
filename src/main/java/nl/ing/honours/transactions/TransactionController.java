@@ -48,6 +48,11 @@ public class TransactionController {
             limit = 0;
         }
         List<Transaction> transactions = session.getTransactions();
+        if (limit > transactions.size()) {
+            limit = transactions.size();
+        } else if (offset > transactions.size()) {
+            offset = transactions.size();
+        }
         transactions.sort(Comparator.comparing(Transaction::getId));
         transactions.subList(offset, limit);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
