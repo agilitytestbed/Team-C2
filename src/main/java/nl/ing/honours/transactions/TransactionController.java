@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -37,24 +38,54 @@ public class TransactionController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getTransactions(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
-                                      @RequestParam(value = "offset", required = false) Integer offset,
-                                      @RequestParam(value = "limit", required = false) Integer limit) {
+                                          @RequestParam(value = "offset", required = false) String offsetInput,
+                                          @RequestParam(value = "limit", required = false) String limitInput,
+                                          @RequestParam(value = "category", required = false) String categoryName) {
         Session session = sessionRepository.findFirstById(sessionId);
-        if (session == new Session()) {
+        if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
-        } else if (offset == null) {
-            offset = 0;
-        } else if (limit == null) {
-            limit = 0;
         }
-        List<Transaction> transactions = session.getTransactions();
-        if (limit > transactions.size()) {
+        List<Transaction> transactions;
+        if (categoryName != null) {
+            Category category = categoryRepository.findByName(categoryName);
+            if (category != null) {
+                transactions = category.getTransactions();
+            } else {
+                transactions = session.getTransactions();
+            }
+        } else {
+            transactions = session.getTransactions();
+        }
+        Integer offset = 0;
+        Integer limit = 20;
+        if  (transactions.size() < 20) {
             limit = transactions.size();
-        } else if (offset > transactions.size()) {
-            offset = transactions.size();
         }
+        try {
+            if (offsetInput != null) {
+                offset = Integer.parseInt(offsetInput);
+            }
+            if (limitInput != null) {
+                limit = Integer.parseInt(limitInput);
+            }
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
+        if (offset > transactions.size()) {
+            offset = transactions.size();
+        } else if (offset < 0) {
+            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        if (limit > transactions.size() - offset) {
+            limit = transactions.size() - offset;
+        } else if (limit < 0) {
+            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
         transactions.sort(Comparator.comparing(Transaction::getId));
-        transactions.subList(offset, limit);
+        transactions = transactions.subList(offset, transactions.size());
+        transactions = transactions.subList(0, limit);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
@@ -86,6 +117,8 @@ public class TransactionController {
                     categoryRepository.save(c);
                 }
             }
+        } else {
+            transaction.setCategory(new ArrayList<Category>());
         }
         transaction.setCategory(categories);
         System.out.println(id + " " + date + " " + amount + " " + iban + " " + type + " " + categories);
@@ -93,5 +126,29 @@ public class TransactionController {
         session.addTransaction(transaction);
         sessionRepository.save(session);
         return new ResponseEntity<>("Successful operation", HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public ResponseEntity findTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+                                          @PathVariable(name = "id") String idString) {
+        Session session = sessionRepository.findFirstById(sessionId);
+        if (session == null) {
+            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
+        }
+        Long id;
+        try {
+            id = Long.parseLong(idString);
+            if (id < 0) {
+                return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+            }
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        Transaction transaction = transactionRepository.findOne(id);
+        if (transaction != null) {
+            return new ResponseEntity<>(transaction, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Transaction not found", HttpStatus.NOT_FOUND);
+        }
     }
 }

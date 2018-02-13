@@ -1,6 +1,6 @@
 package nl.ing.honours.transactions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.gson.annotations.SerializedName;
 import nl.ing.honours.sessions.Session;
@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 @Table(name = "Transaction")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({"id", "date", "amount", "external-iban", "type", "category"})
 @Entity
 public class Transaction implements Serializable {
 
@@ -28,8 +30,7 @@ public class Transaction implements Serializable {
 
     private Double amount;
 
-    @SerializedName("external-iban")
-    @JsonProperty("external-iban")
+    @JsonProperty(value = "external-iban")
     private String iban;
 
     private String type;
@@ -39,6 +40,7 @@ public class Transaction implements Serializable {
     private List<Category> category;
 
     @ManyToOne
+    @JsonIgnore
     private Session session;
 
     public Transaction() {
