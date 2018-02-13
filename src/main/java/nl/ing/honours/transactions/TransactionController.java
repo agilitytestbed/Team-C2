@@ -39,7 +39,7 @@ public class TransactionController {
     public ResponseEntity getTransactions(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
                                       @RequestParam(value = "offset", required = false) Integer offset,
                                       @RequestParam(value = "limit", required = false) Integer limit) {
-        Session session = sessionRepository.findFirstBySession(sessionId);
+        Session session = sessionRepository.findFirstById(sessionId);
         if (session == new Session()) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         } else if (offset == null) {
@@ -68,7 +68,7 @@ public class TransactionController {
         List<Category> categories = transaction.getCategory();
 
 
-        Session session = sessionRepository.findFirstBySession(sessionId);
+        Session session = sessionRepository.findFirstById(sessionId);
         Transaction existingTransaction = transactionRepository.findByIdAndSession(id, session);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);

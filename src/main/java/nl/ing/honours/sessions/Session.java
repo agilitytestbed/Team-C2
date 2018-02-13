@@ -1,23 +1,23 @@
 package nl.ing.honours.sessions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import nl.ing.honours.transactions.Transaction;
 import nl.ing.honours.categories.Category;
+import nl.ing.honours.transactions.Transaction;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "Session")
 @Entity
-@JsonIgnoreProperties(value = { "id" })
 public class Session implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-
-    private String session;
 
     @OneToMany
     private List<Transaction> transactions;
@@ -33,13 +33,6 @@ public class Session implements Serializable {
         this.id = id;
     }
 
-    public String getSession_token() {
-        return session;
-    }
-
-    public void setSession_token(String session_token) {
-        this.session = session_token;
-    }
 
     public List<Transaction> getTransactions() {
         return transactions;
@@ -49,9 +42,13 @@ public class Session implements Serializable {
         this.transactions = transactions;
     }
 
-    public void addTransaction(Transaction transaction) {this.transactions.add(transaction);}
+    public void addTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+    }
 
-    public void removeTransaction(Transaction transaction) {this.transactions.remove(transaction);}
+    public void removeTransaction(Transaction transaction) {
+        this.transactions.remove(transaction);
+    }
 
     public List<Category> getCategories() {
         return categories;
@@ -61,16 +58,22 @@ public class Session implements Serializable {
         this.categories = categories;
     }
 
-    public void addCategory(Category category) {this.categories.add(category);}
+    public void addCategory(Category category) {
+        this.categories.add(category);
+    }
 
-    public void removeCategory(Category category) {this.categories.remove(category);}
+    public void removeCategory(Category category) {
+        this.categories.remove(category);
+    }
 
     public Session() {
 
     }
 
     public Session(String sessionId) {
-        this.session = sessionId;
+        this.id = sessionId;
+        this.transactions = new ArrayList<Transaction>();
+        this.categories = new ArrayList<Category>();
     }
 
 }

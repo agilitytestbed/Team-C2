@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SessionRepository extends JpaRepository<Session, Long> {
-    Session findFirstBySession(String session_token);
+    Session findFirstById(String id);
 }
