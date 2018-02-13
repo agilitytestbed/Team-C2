@@ -1,10 +1,13 @@
 package nl.ing.honours.categories;
 
+import nl.ing.honours.transactions.Transaction;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
 
 @Table(name = "Category")
 @Entity
@@ -15,6 +18,9 @@ public class Category implements Serializable {
     private Long id;
     @Column(name = "name", unique = false, nullable = true, insertable = true, updatable = true)
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<Transaction> transactions;
 
     public Category() {
 
