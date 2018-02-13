@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,9 +45,16 @@ public class Transaction implements Serializable {
 
     }
 
-    public Transaction(Long id, String sessionId, Date Date, Double amount, String externalIban, String type,
+    public Transaction(Long id, Session sessionId, Date Date, Double amount, String externalIban, String type,
                        Category category) {
-
+        this.id = id;
+        this.session = sessionId;
+        this.date = Date;
+        this.amount = amount;
+        this.iban = externalIban;
+        this.type = type;
+        this.category = new ArrayList<Category>();
+        this.category.add(category);
     }
 
     public Long getId() {

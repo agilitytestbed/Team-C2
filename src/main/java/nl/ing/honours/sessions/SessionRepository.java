@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface SessionRepository extends CrudRepository<Session, Long> {
+public interface SessionRepository extends JpaRepository<Session, Long> {
     Session findFirstBySession(String session_token);
 }

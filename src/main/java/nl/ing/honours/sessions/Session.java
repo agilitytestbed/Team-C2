@@ -1,8 +1,6 @@
 package nl.ing.honours.sessions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.ing.honours.transactions.Transaction;
 import nl.ing.honours.categories.Category;
 
@@ -25,7 +23,7 @@ public class Session implements Serializable {
     private List<Transaction> transactions;
 
     @OneToMany
-    private List<Category> category;
+    private List<Category> categories;
 
     public String getId() {
         return id;
@@ -51,13 +49,21 @@ public class Session implements Serializable {
         this.transactions = transactions;
     }
 
-    public List<Category> getCategory() {
-        return category;
+    public void addTransaction(Transaction transaction) {this.transactions.add(transaction);}
+
+    public void removeTransaction(Transaction transaction) {this.transactions.remove(transaction);}
+
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setCategory(List<Category> category) {
-        this.category = category;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
+
+    public void addCategory(Category category) {this.categories.add(category);}
+
+    public void removeCategory(Category category) {this.categories.remove(category);}
 
     public Session() {
 
