@@ -1,6 +1,8 @@
 package nl.ing.honours.categories;
 
 import nl.ing.honours.AutoConfiguration;
+import nl.ing.honours.sessions.Session;
+import nl.ing.honours.sessions.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,9 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private SessionRepository sessionRepository;
+
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getCategories() {
         // 200
@@ -25,10 +30,19 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity createCategory(@RequestBody Category category) {
+    public ResponseEntity createCategory(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+                                         @RequestBody Category category) {
+        Session session = sessionRepository.findFirstById(sessionId);
+        if (session == null) {
+            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
+        } else {
+            category.setSession(session);
+        }
         if (!categoryRepository.exists(category.getId())) {
             // 201
             categoryRepository.save(category);
+            session.addCategory(category);
+            sessionRepository.save(session);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             // 405

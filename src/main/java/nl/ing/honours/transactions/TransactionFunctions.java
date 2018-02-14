@@ -3,17 +3,10 @@ package nl.ing.honours.transactions;
 import nl.ing.honours.categories.Category;
 import nl.ing.honours.categories.CategoryRepository;
 import nl.ing.honours.exceptions.InvalidInputException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionFunctions {
-
-    @Autowired
-    private static CategoryRepository categoryRepository;
 
     public static Long parseId(String idString) throws InvalidInputException {
         try {
@@ -27,22 +20,21 @@ public class TransactionFunctions {
         }
     }
 
-    public static List<Category> checkCategories(Transaction transaction) throws InvalidInputException {
+    public static List<Category> checkCategories(Transaction transaction, CategoryRepository categoryRepository) throws InvalidInputException {
         List<Category> categories = transaction.getCategory();
+        List<Category> results = new ArrayList<>();
         if (categories != null) {
-            categories.removeIf(c -> (c.getId() == null && c.getName() == null)) ;
+            categories.removeIf(c -> (c == null || c.getId() == null && c.getName() == null)) ;
             for (Category c : categories) {
-                if (c.getId() == null || c.getName() == null || !categoryRepository.exists(c.getId())) {
+                Category savedCategory = categoryRepository.findByIdAndSession(c.getId(), transaction.getSession());
+                if (c.getId() == null || c.getName() == null || savedCategory == null ||
+                        !savedCategory.getName().equals(c.getName())) {
                     throw new InvalidInputException("Invalid or unknown category specified!");
                 } else {
-                    Category savedCategory = categoryRepository.findOne(c.getId());
-                    savedCategory.addTransaction(transaction);
-                    categoryRepository.save(savedCategory);
+                    results.add(savedCategory);
                 }
             }
-            return categories;
-        } else {
-            return new ArrayList<>();
         }
+        return results;
     }
 }

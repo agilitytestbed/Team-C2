@@ -1,13 +1,10 @@
 package nl.ing.honours.categories;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.ing.honours.sessions.Session;
 import nl.ing.honours.transactions.Transaction;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,10 +18,12 @@ public class Category implements Serializable {
     @Column(name = "name", unique = false, nullable = true, insertable = true, updatable = true)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @ManyToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Transaction> transactions;
 
     @ManyToOne
+    @JsonIgnore
     private Session session;
 
     public Category() {

@@ -35,7 +35,7 @@ public class Transaction implements Serializable {
 
     private String type;
 
-    @OneToMany
+    @ManyToMany
     @JsonDeserialize()
     private List<Category> category;
 
