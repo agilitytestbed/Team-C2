@@ -95,24 +95,24 @@ public class TransactionController {
     public ResponseEntity createTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
                                             @RequestBody(required = false) Transaction transaction) {
         Long id = transaction.getId();
-        List<Category> categories = transaction.getCategory();
-
         Session session = sessionRepository.findFirstById(sessionId);
-        Transaction existingTransaction = transactionRepository.findByIdAndSession(id, session);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
-        } else if (id == null || existingTransaction != null) {
-            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
-        } else {
-            transaction.setSession(session);
         }
+        if (id != null) {
+            Transaction existingTransaction = transactionRepository.findByIdAndSession(id, session);
+            if (existingTransaction != null) {
+                return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+            }
+        }
+        transaction.setSession(session);
         try {
             List<Category> verifiedCategory = TransactionFunctions.checkCategories(transaction, categoryRepository);
             transaction.setCategory(verifiedCategory);
         } catch (InvalidInputException e) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
-        transactionRepository.save(transaction);
+        transactionRepository.saveAndFlush(transaction);
         session.addTransaction(transaction);
         sessionRepository.save(session);
         return new ResponseEntity<>("Successful operation", HttpStatus.CREATED);

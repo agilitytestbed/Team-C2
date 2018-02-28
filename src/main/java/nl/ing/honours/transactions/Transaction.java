@@ -1,11 +1,9 @@
 package nl.ing.honours.transactions;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import nl.ing.honours.sessions.Session;
 import nl.ing.honours.categories.Category;
-import nl.ing.honours.sessions.Session;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -21,6 +19,7 @@ import java.util.List;
 public class Transaction implements Serializable {
 
     @Id
+    @GeneratedValue
     @Column(insertable = false, updatable = false)
     private Long id;
 
@@ -36,7 +35,7 @@ public class Transaction implements Serializable {
     private String type;
 
     @ManyToMany
-    @JsonDeserialize()
+    @JsonSerialize(using = CustomCategorySerializer.class)
     private List<Category> category;
 
     @ManyToOne
