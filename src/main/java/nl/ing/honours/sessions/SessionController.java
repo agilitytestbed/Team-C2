@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
 
 @RestController
 @Import(AutoConfiguration.class)
@@ -20,7 +21,7 @@ public class SessionController {
     @Autowired
     private SessionRepository sessionRepository;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = TEXT_PLAIN_VALUE)
     public ResponseEntity generateSessionsId() {
         String id = UUID.randomUUID().toString();
         while (sessionRepository.findFirstById(id) != null) {
@@ -28,6 +29,6 @@ public class SessionController {
         }
         Session session = new Session(id);
         sessionRepository.save(session);
-        return new ResponseEntity<>(session, HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }
