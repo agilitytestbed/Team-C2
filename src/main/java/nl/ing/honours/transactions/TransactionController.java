@@ -200,4 +200,38 @@ public class TransactionController {
         }
         return new ResponseEntity<>("Resource deleted", HttpStatus.NO_CONTENT);
     }
+
+    @RequestMapping(value = "{id}/assigncategory", method = RequestMethod.POST)
+    public ResponseEntity assignCategory(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+                                         @PathVariable(name = "id") String transactionInput,
+                                         @RequestParam(value = "categoryId", required = false) String categoryInput) {
+        Session session = sessionRepository.findFirstById(sessionId);
+        if (session == null) {
+            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
+        }
+        Long transactionId;
+        Long categoryId;
+        try {
+            transactionId = TransactionFunctions.parseId(transactionInput);
+            if (categoryInput != null) {
+                categoryId = TransactionFunctions.parseId(categoryInput);
+            } else {
+                return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+            }
+        } catch (InvalidInputException e) {
+            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        Transaction transaction = transactionRepository.findByIdAndSession(transactionId, session);
+        Category category = categoryRepository.findByIdAndSession(categoryId, session);
+        if (transaction != null && category != null) {
+            transaction.getCategory().clear();
+            transaction.addCategory(category);
+            category.addTransaction(transaction);
+            transactionRepository.save(transaction);
+            categoryRepository.save(category);
+        } else {
+            return new ResponseEntity<>("Transaction or category not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

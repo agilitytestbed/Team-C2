@@ -106,6 +106,10 @@ public class Transaction implements Serializable {
         this.category = category;
     }
 
+    public void addCategory(Category category) { this.category.add(category); }
+
+    public void removeCategory(Category category) { this.category.remove(category); }
+
     public Session getSession() {
         return session;
     }
