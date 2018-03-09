@@ -32,9 +32,6 @@ public class TransactionController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getTransactions(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
                                           @RequestParam(value = "offset", required = false) String offsetInput,
@@ -46,12 +43,9 @@ public class TransactionController {
         }
         List<Transaction> transactions;
         if (categoryName != null) {
-            System.out.println(categoryName + " " + session);
             Category category = categoryRepository.findByNameIgnoreCaseAndSession(categoryName, session);
-            System.out.println(category);
             if (category != null) {
                 transactions = category.getTransactions();
-                System.out.println(category.getTransactions());
             } else {
                 return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
             }
@@ -139,13 +133,11 @@ public class TransactionController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity updateTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
                                             @PathVariable(name = "id") String idString,
                                             @RequestBody(required = false) Transaction transaction) {
         Long bodyId = transaction.getId();
-        List<Category> categories = transaction.getCategory();
-
         Session session = sessionRepository.findFirstById(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
@@ -172,7 +164,12 @@ public class TransactionController {
         } catch (InvalidInputException e) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
-        transactionRepository.save(transaction);
+        Transaction existingTransaction = transactionRepository.findByIdAndSession(transaction.getId(), session);
+        if (existingTransaction != null) {
+            transactionRepository.save(transaction);
+        } else {
+            return new ResponseEntity<>("Transaction not found", HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 }

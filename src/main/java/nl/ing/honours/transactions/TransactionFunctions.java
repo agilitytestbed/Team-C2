@@ -27,8 +27,7 @@ public class TransactionFunctions {
             categories.removeIf(c -> (c == null || c.getId() == null && c.getName() == null)) ;
             for (Category c : categories) {
                 Category savedCategory = categoryRepository.findByIdAndSession(c.getId(), transaction.getSession());
-                if (c.getId() == null || c.getName() == null || savedCategory == null ||
-                        !savedCategory.getName().equals(c.getName())) {
+                if (c.getId() == null || savedCategory == null || (c.getName() != null && !savedCategory.getName().equals(c.getName()))) {
                     throw new InvalidInputException("Invalid or unknown category specified!");
                 } else {
                     results.add(savedCategory);
