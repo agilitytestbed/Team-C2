@@ -172,4 +172,32 @@ public class TransactionController {
         }
         return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+                                            @PathVariable(name = "id") String idString) {
+        Session session = sessionRepository.findFirstById(sessionId);
+        if (session == null) {
+            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
+        }
+        Long headerId;
+        try {
+            headerId = TransactionFunctions.parseId(idString);
+        } catch (InvalidInputException e) {
+            return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        Transaction transaction = transactionRepository.findByIdAndSession(headerId, session);
+        if (transaction != null) {
+            session.removeTransaction(transaction);
+            for (Category c : transaction.getCategory()) {
+                c.removeTransaction(transaction);
+                categoryRepository.saveAndFlush(c);
+            }
+            sessionRepository.saveAndFlush(session);
+            transactionRepository.delete(transaction);
+        } else {
+            return new ResponseEntity<>("Transaction not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Resource deleted", HttpStatus.NO_CONTENT);
+    }
 }
