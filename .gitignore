@@ -1,8 +1,10 @@
 .idea/*
-*.iml
 out/*
+target/*
 
-!
+*.iml
+*.db
+
 !.idea/vcs.xml
 !.idea/encodings.xml
 !DPA.iml
