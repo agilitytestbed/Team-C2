@@ -166,11 +166,23 @@ public class TransactionController {
         }
         Transaction existingTransaction = transactionRepository.findByIdAndSession(transaction.getId(), session);
         if (existingTransaction != null) {
+            for (Category c : existingTransaction.getCategory()) {
+                if (!transaction.getCategory().contains(c)) {
+                    c.removeTransaction(existingTransaction);
+                    categoryRepository.saveAndFlush(c);
+                }
+            }
+            for (Category c : transaction.getCategory()) {
+                if (!existingTransaction.getCategory().contains(c)) {
+                    c.addTransaction(transaction);
+                    categoryRepository.saveAndFlush(c);
+                }
+            }
             transactionRepository.save(transaction);
         } else {
             return new ResponseEntity<>("Transaction not found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(transaction, HttpStatus.OK);
+        return new ResponseEntity<>("Successful operation", HttpStatus.OK);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
@@ -232,6 +244,6 @@ public class TransactionController {
         } else {
             return new ResponseEntity<>("Transaction or category not found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>("Successful operation", HttpStatus.OK);
     }
 }

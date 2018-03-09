@@ -24,7 +24,11 @@ public class CategoryController {
     private SessionRepository sessionRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getCategories() {
+    public ResponseEntity getCategories(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId) {
+        Session session = sessionRepository.findFirstById(sessionId);
+        if (session == null) {
+            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
+        }
         // 200
         return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
     }
