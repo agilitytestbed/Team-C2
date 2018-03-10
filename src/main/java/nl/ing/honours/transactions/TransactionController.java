@@ -6,8 +6,6 @@ import nl.ing.honours.exceptions.InvalidInputException;
 import nl.ing.honours.sessions.Session;
 import nl.ing.honours.sessions.SessionRepository;
 import nl.ing.honours.categories.Category;
-import org.modelmapper.ModelMapper;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -33,11 +31,11 @@ public class TransactionController {
     private CategoryRepository categoryRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity getTransactions(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+    public ResponseEntity getTransactions(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                           @RequestParam(value = "offset", required = false) String offsetInput,
                                           @RequestParam(value = "limit", required = false) String limitInput,
                                           @RequestParam(value = "category", required = false) String categoryName) {
-        Session session = sessionRepository.findFirstById(sessionId);
+        Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
@@ -86,10 +84,10 @@ public class TransactionController {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = TEXT_PLAIN_VALUE)
-    public ResponseEntity createTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+    public ResponseEntity createTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                             @RequestBody(required = false) Transaction transaction) {
         Long id = transaction.getId();
-        Session session = sessionRepository.findFirstById(sessionId);
+        Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
@@ -113,9 +111,9 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity findTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+    public ResponseEntity findTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                           @PathVariable(name = "id") String idString) {
-        Session session = sessionRepository.findFirstById(sessionId);
+        Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
@@ -134,11 +132,11 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity updateTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+    public ResponseEntity updateTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                             @PathVariable(name = "id") String idString,
                                             @RequestBody(required = false) Transaction transaction) {
         Long bodyId = transaction.getId();
-        Session session = sessionRepository.findFirstById(sessionId);
+        Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         } else {
@@ -186,9 +184,9 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+    public ResponseEntity deleteTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                             @PathVariable(name = "id") String idString) {
-        Session session = sessionRepository.findFirstById(sessionId);
+        Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
@@ -214,10 +212,10 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}/assigncategory", method = RequestMethod.POST)
-    public ResponseEntity assignCategory(@RequestHeader(name = "WWW_Authenticate", required = false) String sessionId,
+    public ResponseEntity assignCategory(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                          @PathVariable(name = "id") String transactionInput,
                                          @RequestParam(value = "categoryId", required = false) String categoryInput) {
-        Session session = sessionRepository.findFirstById(sessionId);
+        Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }

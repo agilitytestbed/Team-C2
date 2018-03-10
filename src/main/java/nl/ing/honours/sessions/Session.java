@@ -1,6 +1,5 @@
 package nl.ing.honours.sessions;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import nl.ing.honours.categories.Category;
 import nl.ing.honours.transactions.Transaction;
 
@@ -9,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "Session")
@@ -17,7 +15,7 @@ import java.util.List;
 public class Session implements Serializable {
 
     @Id
-    private String id;
+    private Long sessionId;
 
     @OneToMany
     private List<Transaction> transactions;
@@ -25,14 +23,13 @@ public class Session implements Serializable {
     @OneToMany
     private List<Category> categories;
 
-    public String getId() {
-        return id;
+    public Long getSessionId() {
+        return sessionId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
     }
-
 
     public List<Transaction> getTransactions() {
         return transactions;
@@ -70,10 +67,10 @@ public class Session implements Serializable {
 
     }
 
-    public Session(String sessionId) {
-        this.id = sessionId;
-        this.transactions = new ArrayList<Transaction>();
-        this.categories = new ArrayList<Category>();
+    public Session(Long sessionId, List<Transaction> transactions, List<Category> categories) {
+        this.sessionId = sessionId;
+        this.transactions = transactions;
+        this.categories = categories;
     }
 
 }
