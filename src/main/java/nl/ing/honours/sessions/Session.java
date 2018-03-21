@@ -1,5 +1,8 @@
 package nl.ing.honours.sessions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import nl.ing.honours.categories.Category;
 import nl.ing.honours.transactions.Transaction;
 
@@ -12,14 +15,18 @@ import java.util.List;
 
 @Table(name = "Session")
 @Entity
+@JsonPropertyOrder({"session_id"})
 public class Session implements Serializable {
 
+    @JsonProperty(value = "session_id", required = true)
     @Id
     private Long sessionId;
 
+    @JsonIgnore
     @OneToMany
     private List<Transaction> transactions;
 
+    @JsonIgnore
     @OneToMany
     private List<Category> categories;
 

@@ -24,7 +24,7 @@ public class CategoryController {
     private SessionRepository sessionRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getCategories(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId) {
+    public ResponseEntity getCategories(@RequestHeader(name = "X-session-ID", required = false) Long sessionId) {
         Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
@@ -34,7 +34,7 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity createCategory(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
+    public ResponseEntity createCategory(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                          @RequestBody Category category) {
         Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {

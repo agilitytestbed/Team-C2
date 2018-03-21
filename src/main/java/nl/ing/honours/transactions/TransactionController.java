@@ -84,7 +84,7 @@ public class TransactionController {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = TEXT_PLAIN_VALUE)
-    public ResponseEntity createTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
+    public ResponseEntity createTransaction(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                             @RequestBody(required = false) Transaction transaction) {
         Long id = transaction.getId();
         Session session = sessionRepository.findBySessionId(sessionId);
@@ -111,7 +111,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity findTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
+    public ResponseEntity findTransaction(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                           @PathVariable(name = "id") String idString) {
         Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
@@ -132,7 +132,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity updateTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
+    public ResponseEntity updateTransaction(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                             @PathVariable(name = "id") String idString,
                                             @RequestBody(required = false) Transaction transaction) {
         Long bodyId = transaction.getId();
@@ -184,7 +184,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteTransaction(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
+    public ResponseEntity deleteTransaction(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                             @PathVariable(name = "id") String idString) {
         Session session = sessionRepository.findBySessionId(sessionId);
         if (session == null) {
@@ -212,7 +212,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "{id}/assigncategory", method = RequestMethod.POST)
-    public ResponseEntity assignCategory(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
+    public ResponseEntity assignCategory(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                          @PathVariable(name = "id") String transactionInput,
                                          @RequestParam(value = "categoryId", required = false) String categoryInput) {
         Session session = sessionRepository.findBySessionId(sessionId);
