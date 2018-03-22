@@ -1,24 +1,27 @@
-package nl.ing.honours.transactions;
+package nl.ing.honours.controller;
 
-import nl.ing.honours.AutoConfiguration;
-import nl.ing.honours.categories.CategoryRepository;
+import nl.ing.honours.category.Category;
+import nl.ing.honours.category.CategoryRepository;
 import nl.ing.honours.exceptions.InvalidInputException;
-import nl.ing.honours.sessions.Session;
-import nl.ing.honours.sessions.SessionRepository;
-import nl.ing.honours.categories.Category;
+import nl.ing.honours.session.Session;
+import nl.ing.honours.session.SessionRepository;
+import nl.ing.honours.transaction.Transaction;
+import nl.ing.honours.transaction.TransactionFunctions;
+import nl.ing.honours.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
-import static org.springframework.util.MimeTypeUtils.*;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
 
 @RestController
-@Import({AutoConfiguration.class})
-@RequestMapping("/transactions")
+@RequestMapping("/transaction")
 public class TransactionController {
 
     @Autowired
@@ -30,6 +33,7 @@ public class TransactionController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getTransactions(@RequestHeader(name = "WWW_Authenticate", required = false) Long sessionId,
                                           @RequestParam(value = "offset", required = false) String offsetInput,
@@ -39,21 +43,21 @@ public class TransactionController {
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
-        List<Transaction> transactions;
+        List<Transaction> transaction;
         if (categoryName != null) {
             Category category = categoryRepository.findByNameIgnoreCaseAndSession(categoryName, session);
             if (category != null) {
-                transactions = category.getTransactions();
+                transaction = category.getTransactions();
             } else {
                 return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
             }
         } else {
-            transactions = session.getTransactions();
+            transaction = session.getTransactions();
         }
         Integer offset = 0;
         Integer limit = 20;
-        if  (transactions.size() < 20) {
-            limit = transactions.size();
+        if (transaction.size() < 20) {
+            limit = transaction.size();
         }
         try {
             if (offsetInput != null) {
@@ -66,33 +70,33 @@ public class TransactionController {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
 
-        if (offset > transactions.size()) {
-            offset = transactions.size();
+        if (offset > transaction.size()) {
+            offset = transaction.size();
         } else if (offset < 0) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
-        if (limit > transactions.size() - offset) {
-            limit = transactions.size() - offset;
+        if (limit > transaction.size() - offset) {
+            limit = transaction.size() - offset;
         } else if (limit < 0) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
 
-        transactions.sort(Comparator.comparing(Transaction::getId));
-        transactions = transactions.subList(offset, transactions.size());
-        transactions = transactions.subList(0, limit);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+        transaction.sort(Comparator.comparing(Transaction::getId));
+        transaction = transaction.subList(offset, transaction.size());
+        transaction = transaction.subList(0, limit);
+        return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = TEXT_PLAIN_VALUE)
     public ResponseEntity createTransaction(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                             @RequestBody(required = false) Transaction transaction) {
         Long id = transaction.getId();
-        Session session = sessionRepository.findBySessionId(sessionId);
+        Session session = sessionRepository.findById(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
         if (id != null) {
-            Transaction existingTransaction = transactionRepository.findByIdAndSession(id, session);
+            Transaction existingTransaction = transactionRepository.findBySessionAndId(session, id);
             if (existingTransaction != null) {
                 return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
             }
@@ -105,7 +109,7 @@ public class TransactionController {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
         transactionRepository.saveAndFlush(transaction);
-        session.addTransaction(transaction);
+        session.getTransactions().add(transaction).;
         sessionRepository.save(session);
         return new ResponseEntity<>("Successful operation", HttpStatus.CREATED);
     }
@@ -136,7 +140,7 @@ public class TransactionController {
                                             @PathVariable(name = "id") String idString,
                                             @RequestBody(required = false) Transaction transaction) {
         Long bodyId = transaction.getId();
-        Session session = sessionRepository.findBySessionId(sessionId);
+        Session session = sessionRepository.findById(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         } else {
@@ -162,7 +166,7 @@ public class TransactionController {
         } catch (InvalidInputException e) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
-        Transaction existingTransaction = transactionRepository.findByIdAndSession(transaction.getId(), session);
+        Transaction existingTransaction = transactionRepository.findBySessionAndId(session, transaction.getId());
         if (existingTransaction != null) {
             for (Category c : existingTransaction.getCategory()) {
                 if (!transaction.getCategory().contains(c)) {
@@ -186,7 +190,7 @@ public class TransactionController {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteTransaction(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                             @PathVariable(name = "id") String idString) {
-        Session session = sessionRepository.findBySessionId(sessionId);
+        Session session = sessionRepository.findById(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
@@ -196,7 +200,7 @@ public class TransactionController {
         } catch (InvalidInputException e) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
-        Transaction transaction = transactionRepository.findByIdAndSession(headerId, session);
+        Transaction transaction = transactionRepository.findBySessionAndId(session, headerId);
         if (transaction != null) {
             session.removeTransaction(transaction);
             for (Category c : transaction.getCategory()) {
@@ -215,7 +219,7 @@ public class TransactionController {
     public ResponseEntity assignCategory(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
                                          @PathVariable(name = "id") String transactionInput,
                                          @RequestParam(value = "categoryId", required = false) String categoryInput) {
-        Session session = sessionRepository.findBySessionId(sessionId);
+        Session session = sessionRepository.findById(sessionId);
         if (session == null) {
             return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
         }
@@ -231,12 +235,12 @@ public class TransactionController {
         } catch (InvalidInputException e) {
             return new ResponseEntity<>("Invalid input given", HttpStatus.METHOD_NOT_ALLOWED);
         }
-        Transaction transaction = transactionRepository.findByIdAndSession(transactionId, session);
-        Category category = categoryRepository.findByIdAndSession(categoryId, session);
+        Transaction transaction = transactionRepository.findBySessionAndId(session, transactionId);
+        Category category = categoryRepository.findBySessionAndId(session, categoryId);
         if (transaction != null && category != null) {
             transaction.getCategory().clear();
             transaction.addCategory(category);
-            category.addTransaction(transaction);
+            category.getTransactions().add(transaction);
             transactionRepository.save(transaction);
             categoryRepository.save(category);
         } else {

@@ -1,8 +1,10 @@
 package nl.ing.honours.transactions;
 
-import nl.ing.honours.categories.Category;
-import nl.ing.honours.categories.CategoryRepository;
+import nl.ing.honours.category.Category;
+import nl.ing.honours.category.CategoryRepository;
 import nl.ing.honours.exceptions.InvalidInputException;
+import nl.ing.honours.transaction.Transaction;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,9 @@ public class TransactionFunctions {
         List<Category> categories = transaction.getCategory();
         List<Category> results = new ArrayList<>();
         if (categories != null) {
-            categories.removeIf(c -> (c == null || c.getId() == null && c.getName() == null)) ;
+            categories.removeIf(c -> (c == null || c.getId() == null && c.getName() == null));
             for (Category c : categories) {
-                Category savedCategory = categoryRepository.findByIdAndSession(c.getId(), transaction.getSession());
+                Category savedCategory = categoryRepository.findBySessionAndId(transaction.getSession(), c.getId());
                 if (c.getId() == null || savedCategory == null || (c.getName() != null && !savedCategory.getName().equals(c.getName()))) {
                     throw new InvalidInputException("Invalid or unknown category specified!");
                 } else {

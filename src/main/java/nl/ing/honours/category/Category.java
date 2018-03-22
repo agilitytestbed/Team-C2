@@ -1,42 +1,36 @@
-package nl.ing.honours.categories;
+package nl.ing.honours.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.ing.honours.sessions.Session;
-import nl.ing.honours.transactions.Transaction;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import nl.ing.honours.session.Session;
+import nl.ing.honours.transaction.Transaction;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Table(name = "Category")
 @Entity
+@Table(name = "Category")
+@JsonPropertyOrder({"id", "name"})
 public class Category implements Serializable {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false, insertable = true, updatable = true)
+    @NaturalId
     private Long id;
-    @Column(name = "name", unique = false, nullable = true, insertable = true, updatable = true)
+
     private String name;
 
-    @ManyToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category")
     @JsonIgnore
     private List<Transaction> transactions;
 
+    @NaturalId
     @ManyToOne
     @JsonIgnore
     private Session session;
 
     public Category() {
-
-    }
-
-    public Category(Long id, String sessionId, String name) {
-
-    }
-
-    @Override
-    public String toString() {
-        return this.id + " " + this.name;
     }
 
     public Long getId() {
@@ -62,10 +56,6 @@ public class Category implements Serializable {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
-
-    public void addTransaction(Transaction transaction) {this.transactions.add(transaction);}
-
-    public void removeTransaction(Transaction transaction) {this.transactions.remove(transaction);}
 
     public Session getSession() {
         return session;
