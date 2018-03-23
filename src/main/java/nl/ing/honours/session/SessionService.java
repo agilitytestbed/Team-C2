@@ -2,26 +2,25 @@ package nl.ing.honours.session;
 
 import nl.ing.honours.category.Category;
 import nl.ing.honours.transaction.Transaction;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class SessionService {
 
     private final SessionRepository sessionRepository;
-    private final Random random;
 
     public SessionService(SessionRepository sessionRepository) {
         this.sessionRepository = sessionRepository;
-        this.random = new Random();
     }
 
     public Session createSession() {
-        Long id;
+        String id;
         do {
-            id = random.nextLong();
+            id = UUID.randomUUID().toString();
         } while (sessionRepository.findById(id) != null);
         Session session = new Session();
         session.setId(id);
@@ -30,11 +29,12 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    public Session findSessionById(Long id) {
-        return sessionRepository.findById(id);
+    public Session getCurrentSession() {
+        return (Session) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public boolean verifySessionById(Long id) {
-        return sessionRepository.exists(id);
+
+    public Session findSessionById(String id) {
+        return sessionRepository.findById(id);
     }
 }

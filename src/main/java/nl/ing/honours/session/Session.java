@@ -1,28 +1,24 @@
 package nl.ing.honours.session;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import nl.ing.honours.category.Category;
 import nl.ing.honours.transaction.Transaction;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "Session")
-@JsonPropertyOrder({"session_id"})
+@JsonPropertyOrder({"id"})
 public class Session implements Serializable {
 
     @Id
-    @JsonProperty(value = "session_id")
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
+    private String id;
 
     @OneToMany(mappedBy = "session")
     @JsonIgnore
@@ -35,11 +31,11 @@ public class Session implements Serializable {
     public Session() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

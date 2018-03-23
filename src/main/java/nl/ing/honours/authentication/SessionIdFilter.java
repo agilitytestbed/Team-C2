@@ -1,5 +1,6 @@
 package nl.ing.honours.authentication;
 
+import nl.ing.honours.session.Session;
 import nl.ing.honours.session.SessionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -23,11 +24,12 @@ public class SessionIdFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        try {
-            Long id = new Long(httpServletRequest.getHeader(AUTHENTICATION_HEADER));
-            SecurityContextHolder.getContext().setAuthentication(new SessionIdAuthentication((sessionService.findSessionById(id))));
-        } catch (NumberFormatException nfe) {
-            System.out.println("Session ID invalid.");
+        String id = httpServletRequest.getHeader(AUTHENTICATION_HEADER);
+        if (id != null) {
+            Session session = sessionService.findSessionById(id);
+            if (session != null) {
+                SecurityContextHolder.getContext().setAuthentication(new SessionIdAuthentication(session));
+            }
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
