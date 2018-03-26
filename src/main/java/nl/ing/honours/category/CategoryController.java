@@ -1,11 +1,13 @@
 package nl.ing.honours.category;
 
-import nl.ing.honours.session.Session;
-import nl.ing.honours.session.SessionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import nl.ing.honours.exceptions.InvalidInputException;
+import nl.ing.honours.exceptions.ResourceNotFoundException;
+import nl.ing.honours.session.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -14,77 +16,60 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/categories")
 public class CategoryController {
 
-    @Autowired
-    private SessionRepository sessionRepository;
+    private final SessionService sessionService;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getCategories(@RequestHeader(name = "X-session-ID", required = false) Long sessionId) {
-        Session session = sessionRepository.findById(sessionId);
-        if (session == null) {
-            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
-        }
-        // 200
-        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
+    public CategoryController(SessionService sessionService, CategoryService categoryService) {
+        this.sessionService = sessionService;
+        this.categoryService = categoryService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity createCategory(@RequestHeader(name = "X-session-ID", required = false) Long sessionId,
-                                         @RequestBody Category category) {
-        Session session = sessionRepository.findById(sessionId);
-        if (session == null) {
-            return new ResponseEntity<>("Session ID is missing or invalid", HttpStatus.UNAUTHORIZED);
-        } else {
-            category.setSession(session);
-        }
-        if (!categoryRepository.exists(category.getId())) {
-            // 201
-            categoryRepository.save(category);
-            session.getCategories().add(category);
-            sessionRepository.save(session);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } else {
-            // 405
-            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
-        }
+    @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getCategories() {
+        List<Category> categories = this.categoryService.findBySession(this.sessionService.getCurrent());
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{categoryId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getCategory(@PathVariable Long categoryId) {
-        if (categoryRepository.exists(categoryId)) {
-            // 200
-            return new ResponseEntity<>(categoryRepository.findOne(categoryId), HttpStatus.OK);
-        } else {
-            // 404
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity createCategory(@RequestBody Category data) {
+        if (data.getId() != null) {
+            throw new InvalidInputException();
         }
+        data.setSession(this.sessionService.getCurrent());
+        Category category = this.categoryService.create(data);
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{categoryId}", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity updateCategory(@PathVariable Long categoryId, @RequestBody Category newCategory) {
-        if (categoryRepository.exists(categoryId)) {
-            // 200
-            Category oldCategory = categoryRepository.findOne(categoryId);
-            oldCategory.setName(newCategory.getName());
-            categoryRepository.save(oldCategory);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            // 404
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getCategory(@PathVariable Long id) {
+        Category category = this.categoryService.findBySessionAndId(this.sessionService.getCurrent(), id);
+        if (category == null) {
+            throw new ResourceNotFoundException();
         }
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{categoryId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteCategory(@PathVariable Long categoryId) {
-        if (categoryRepository.exists(categoryId)) {
-            // 204
-            categoryRepository.delete(categoryId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            // 404
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity updateCategory(@PathVariable Long id, @RequestBody Category data) {
+        if (data.getId() != null) {
+            throw new InvalidInputException();
         }
+        Category category = this.categoryService.findBySessionAndId(this.sessionService.getCurrent(), id);
+        if (category == null) {
+            throw new ResourceNotFoundException();
+        }
+        Category updatedCategory = this.categoryService.updateBySessionAndId(data, this.sessionService.getCurrent(), id);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteCategory(@PathVariable Long id) {
+        Category category = this.categoryService.findBySessionAndId(sessionService.getCurrent(), id);
+        if (category == null) {
+            throw new ResourceNotFoundException();
+        }
+        this.categoryService.deleteBySessionAndId(this.sessionService.getCurrent(), id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,16 +1,18 @@
-package nl.ing.honours.authentication;
+package nl.ing.honours.authorization;
 
-import nl.ing.honours.session.Session;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
 public class SessionIdAuthentication implements Authentication {
-    private Session session;
 
-    public SessionIdAuthentication(Session session) {
-        this.session = session;
+    private String id;
+    private boolean authenticated;
+
+    SessionIdAuthentication(String id, boolean authenticated) {
+        this.id = id;
+        this.authenticated = authenticated;
     }
 
     @Override
@@ -30,17 +32,17 @@ public class SessionIdAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return id;
     }
 
     @Override
     public boolean isAuthenticated() {
-        return session != null;
+        return authenticated;
     }
 
     @Override
-    public void setAuthenticated(boolean b) throws IllegalArgumentException {
-
+    public void setAuthenticated(boolean authenticated) throws IllegalArgumentException {
+        this.authenticated = authenticated;
     }
 
     @Override

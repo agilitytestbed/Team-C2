@@ -12,4 +12,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findBySession(Session session);
 
     Category findBySessionAndId(Session session, Long id);
+
+    Category findByNameAndSession(String name, Session session);
 }

@@ -17,24 +17,24 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public Session createSession() {
+    public Session create() {
         String id;
         do {
             id = UUID.randomUUID().toString();
-        } while (sessionRepository.findById(id) != null);
+        } while (this.sessionRepository.findById(id) != null);
         Session session = new Session();
         session.setId(id);
-        session.setTransactions(new ArrayList<Transaction>());
-        session.setCategories(new ArrayList<Category>());
-        return sessionRepository.save(session);
+        session.setTransactions(new ArrayList<>());
+        session.setCategories(new ArrayList<>());
+        return this.sessionRepository.save(session);
     }
 
-    public Session getCurrentSession() {
-        return (Session) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public Session getCurrent() {
+        String id = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return this.sessionRepository.findById(id);
     }
 
-
-    public Session findSessionById(String id) {
-        return sessionRepository.findById(id);
+    public boolean verifyById(String id) {
+        return this.sessionRepository.exists(id);
     }
 }

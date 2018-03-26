@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import nl.ing.honours.category.Category;
 import nl.ing.honours.session.Session;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -18,7 +17,6 @@ import java.util.Date;
 public class Transaction implements Serializable {
 
     @Id
-    @NaturalId
     @GeneratedValue
     private Long id;
 
@@ -35,14 +33,13 @@ public class Transaction implements Serializable {
     @ManyToOne
     private Category category;
 
-    @NaturalId
     @ManyToOne
     @JsonIgnore
     private Session session;
 
     public enum Type {
         deposit,
-        withdrawal;
+        withdrawal
     }
 
     public Transaction() {

@@ -20,6 +20,6 @@ public class SessionController {
 
     @RequestMapping(method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createSession() {
-        return new ResponseEntity<>(sessionService.createSession(), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.sessionService.create(), HttpStatus.CREATED);
     }
 }

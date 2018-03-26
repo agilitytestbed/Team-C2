@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import nl.ing.honours.session.Session;
 import nl.ing.honours.transaction.Transaction;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +15,7 @@ import java.util.List;
 public class Category implements Serializable {
 
     @Id
-    @NaturalId
+    @GeneratedValue
     private Long id;
 
     private String name;
@@ -25,7 +24,6 @@ public class Category implements Serializable {
     @JsonIgnore
     private List<Transaction> transactions;
 
-    @NaturalId
     @ManyToOne
     @JsonIgnore
     private Session session;
