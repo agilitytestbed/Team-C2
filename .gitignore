@@ -8,8 +8,4 @@ target/*
 !.idea/vcs.xml
 !.idea/encodings.xml
 !DPA.iml
-<<<<<<< HEAD
 !pom.xml
-=======
-!pom.xml
->>>>>>> release/initial_system
