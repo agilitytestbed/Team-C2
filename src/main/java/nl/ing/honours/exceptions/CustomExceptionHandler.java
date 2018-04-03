@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-// HttpMessageNotReadableException.class,
+
 @ControllerAdvice
 public class CustomExceptionHandler {
-    @ExceptionHandler(value = {InvalidInputException.class, MissingPathVariableException.class, MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler(value = {InvalidInputException.class, MissingPathVariableException.class, MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     @ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED, code = HttpStatus.METHOD_NOT_ALLOWED, reason = "Invalid input given.")
     public void handleInvalidInputException() {
     }
