@@ -33,9 +33,6 @@ public class CategoryController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity createCategory(@RequestBody Category data) {
-        if (data.getId() != null) {
-            throw new InvalidInputException();
-        }
         if (data.getName() == null) {
             throw new InvalidInputException();
         }
@@ -55,9 +52,6 @@ public class CategoryController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity updateCategory(@PathVariable Long id, @RequestBody Category data) {
-        if (data.getId() != null) {
-            throw new InvalidInputException();
-        }
         if (data.getName() == null) {
             throw new InvalidInputException();
         }

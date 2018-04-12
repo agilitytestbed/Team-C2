@@ -1,6 +1,8 @@
 package nl.ing.honours.transaction;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import nl.ing.honours.category.Category;
 import nl.ing.honours.session.Session;
@@ -18,6 +20,7 @@ public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -31,6 +34,7 @@ public class Transaction implements Serializable {
     private Type type;
 
     @ManyToOne
+    @JsonIgnore
     private Category category;
 
     @ManyToOne
@@ -42,13 +46,21 @@ public class Transaction implements Serializable {
         withdrawal
     }
 
-    public Transaction() {
+    @JsonCreator
+    public Transaction(@JsonProperty("date") Date date, @JsonProperty("amount") Float amount,
+                       @JsonProperty("externalIBAN") String externalIBAN, @JsonProperty("type") Type type) {
+        this.date = date;
+        this.amount = amount;
+        this.externalIBAN = externalIBAN;
+        this.type = type;
     }
 
+    @JsonProperty("id")
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -85,10 +97,12 @@ public class Transaction implements Serializable {
         this.type = type;
     }
 
+    @JsonProperty("category")
     public Category getCategory() {
         return category;
     }
 
+    @JsonIgnore
     public void setCategory(Category category) {
         this.category = category;
     }

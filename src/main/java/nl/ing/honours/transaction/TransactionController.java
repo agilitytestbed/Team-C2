@@ -49,12 +49,6 @@ public class TransactionController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity createTransaction(@RequestBody Transaction data) {
-        if (data.getId() != null || data.getCategory() != null) {
-            throw new InvalidInputException();
-        }
-        if (data.getDate() == null || data.getAmount() == null || data.getExternalIBAN() == null || data.getType() == null) {
-            throw new InvalidInputException();
-        }
         data.setSession(sessionService.getCurrent());
         Transaction transaction = transactionService.create(data);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
@@ -69,12 +63,6 @@ public class TransactionController {
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity updateTransaction(@PathVariable(name = "id") Long id,
                                             @RequestBody Transaction data) {
-        if (data.getId() != null || data.getCategory() != null) {
-            throw new InvalidInputException();
-        }
-        if (data.getDate() == null || data.getAmount() == null || data.getExternalIBAN() == null || data.getType() == null) {
-            throw new InvalidInputException();
-        }
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
         if (transaction == null) {
             throw new ResourceNotFoundException();
@@ -96,9 +84,6 @@ public class TransactionController {
     @RequestMapping(value = "{id}/category", method = RequestMethod.PATCH)
     public ResponseEntity assignCategory(@PathVariable(name = "id") Long id,
                                          @RequestBody Category data) {
-        if (data.getName() != null) {
-            throw new InvalidInputException();
-        }
         if (data.getId() == null) {
             throw new InvalidInputException();
         }
