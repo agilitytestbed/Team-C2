@@ -72,6 +72,9 @@ public class TransactionController {
         if (data.getId() != null || data.getCategory() != null) {
             throw new InvalidInputException();
         }
+        if (data.getDate() == null || data.getAmount() == null || data.getExternalIBAN() == null || data.getType() == null) {
+            throw new InvalidInputException();
+        }
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
         if (transaction == null) {
             throw new ResourceNotFoundException();
@@ -93,6 +96,12 @@ public class TransactionController {
     @RequestMapping(value = "{id}/category", method = RequestMethod.PATCH)
     public ResponseEntity assignCategory(@PathVariable(name = "id") Long id,
                                          @RequestBody Category data) {
+        if (data.getName() != null) {
+            throw new InvalidInputException();
+        }
+        if (data.getId() == null) {
+            throw new InvalidInputException();
+        }
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
         if (transaction == null) {
             throw new ResourceNotFoundException();

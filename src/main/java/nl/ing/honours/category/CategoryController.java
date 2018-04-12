@@ -36,6 +36,9 @@ public class CategoryController {
         if (data.getId() != null) {
             throw new InvalidInputException();
         }
+        if (data.getName() == null) {
+            throw new InvalidInputException();
+        }
         data.setSession(this.sessionService.getCurrent());
         Category category = this.categoryService.create(data);
         return new ResponseEntity<>(category, HttpStatus.CREATED);
@@ -53,6 +56,9 @@ public class CategoryController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity updateCategory(@PathVariable Long id, @RequestBody Category data) {
         if (data.getId() != null) {
+            throw new InvalidInputException();
+        }
+        if (data.getName() == null) {
             throw new InvalidInputException();
         }
         Category category = this.categoryService.findBySessionAndId(this.sessionService.getCurrent(), id);
