@@ -52,6 +52,9 @@ public class TransactionController {
         if (data.getId() != null || data.getCategory() != null) {
             throw new InvalidInputException();
         }
+        if (data.getDate() == null || data.getAmount() == null || data.getExternalIBAN() == null || data.getType() == null) {
+            throw new InvalidInputException();
+        }
         data.setSession(sessionService.getCurrent());
         Transaction transaction = transactionService.create(data);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
