@@ -1,11 +1,16 @@
 package nl.ing.honours.category;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import nl.ing.honours.exceptions.InvalidInputException;
 import nl.ing.honours.session.Session;
 import nl.ing.honours.transaction.Transaction;
@@ -20,6 +25,7 @@ import java.util.List;
 @JsonPropertyOrder({"id", "name"})
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonDeserialize(using = Category.Deserializer.class)
+@JsonSerialize(using = Category.Serializer.class)
 public class Category implements Serializable {
 
     @Id
@@ -44,6 +50,11 @@ public class Category implements Serializable {
     @JsonCreator
     public Category(@JsonProperty("name") String name) {
         this.name = name;
+    }
+
+
+    private Category() {
+
     }
 
     public Long getId() {
@@ -101,6 +112,28 @@ public class Category implements Serializable {
             } else {
                 throw new InvalidInputException();
             }
+        }
+    }
+
+    public static class Serializer extends StdSerializer<Category> {
+
+        public Serializer() {
+            this(null);
+        }
+
+        Serializer(Class<Category> c) {
+            super(c);
+        }
+
+        @Override
+        public void serialize(
+                Category value, JsonGenerator jgen, SerializerProvider provider)
+                throws IOException, JsonProcessingException {
+
+            jgen.writeStartObject();
+            jgen.writeNumberField("id", value.id);
+            jgen.writeStringField("name", value.name);
+            jgen.writeEndObject();
         }
     }
 }
