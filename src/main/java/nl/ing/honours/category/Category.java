@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import nl.ing.honours.exceptions.InvalidInputException;
 import nl.ing.honours.session.Session;
 import nl.ing.honours.transaction.Transaction;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.util.List;
 @Entity
 @Table(name = "Category")
 @JsonPropertyOrder({"id", "name"})
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = Category.Deserializer.class)
 @JsonSerialize(using = Category.Serializer.class)
 public class Category implements Serializable {
@@ -32,12 +33,14 @@ public class Category implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @NaturalId
     private String name;
 
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     private List<Transaction> transactions;
 
+    @NaturalId
     @ManyToOne
     @JsonIgnore
     private Session session;
@@ -106,7 +109,7 @@ public class Category implements Serializable {
             } else if (node.has("name")) {
                 String name = node.get("name").asText();
                 return new Category(name);
-            } else if (node.has("id")){
+            } else if (node.has("id")) {
                 Long id = node.get("id").asLong();
                 return new Category(id);
             } else {
