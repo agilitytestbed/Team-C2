@@ -49,7 +49,7 @@ public class CategoryService {
         this.categoryRepository.delete(category);
     }
 
-    public Category findByNameAndSession(String name, Session session) {
-        return categoryRepository.findByNameAndSession(name, session);
+    public Category findBySessionAndName(Session session, String name) {
+        return categoryRepository.findBySessionAndName(session, name);
     }
 }

@@ -13,5 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Category findBySessionAndId(Session session, Long id);
 
-    Category findByNameAndSession(String name, Session session);
+    Category findBySessionAndName(Session session, String name);
 }

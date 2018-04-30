@@ -33,7 +33,11 @@ public class CategoryController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity createCategory(@RequestBody Category data) {
-        if (data.getId() != null) {
+        if (data.getId() != null || data.getName() == null) {
+            throw new InvalidInputException();
+        }
+        Category oldCategory = this.categoryService.findBySessionAndName(this.sessionService.getCurrent(), data.getName());
+        if (oldCategory != null) {
             throw new InvalidInputException();
         }
         data.setSession(this.sessionService.getCurrent());
