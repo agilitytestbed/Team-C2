@@ -39,7 +39,6 @@ public class Category implements Serializable {
     @JsonIgnore
     private List<Transaction> transactions;
 
-    @NaturalId
     @ManyToOne
     @JsonIgnore
     private Session session;
