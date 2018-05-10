@@ -104,13 +104,16 @@ public class Category implements Serializable {
         @Override
         public Category deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode node = jp.getCodec().readTree(jp);
-            if (node.has("name") && node.has("id")) {
+            if (node.has("name") && (node.has("id") || node.has("category_id"))) {
                 throw new InvalidInputException();
             } else if (node.has("name")) {
                 String name = node.get("name").asText();
                 return new Category(name);
             } else if (node.has("id")) {
                 Long id = node.get("id").asLong();
+                return new Category(id);
+            } else if (node.has("category_id")){
+                Long id = node.get("category_id").asLong();
                 return new Category(id);
             } else {
                 throw new InvalidInputException();
@@ -132,7 +135,6 @@ public class Category implements Serializable {
         public void serialize(
                 Category value, JsonGenerator jgen, SerializerProvider provider)
                 throws IOException, JsonProcessingException {
-
             jgen.writeStartObject();
             jgen.writeNumberField("id", value.id);
             jgen.writeStringField("name", value.name);

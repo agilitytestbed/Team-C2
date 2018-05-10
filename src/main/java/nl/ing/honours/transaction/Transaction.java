@@ -1,9 +1,6 @@
 package nl.ing.honours.transaction;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import nl.ing.honours.category.Category;
 import nl.ing.honours.session.Session;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,6 +22,7 @@ public class Transaction implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date date;
 
     private Float amount;
@@ -45,6 +43,8 @@ public class Transaction implements Serializable {
         deposit,
         withdrawal
     }
+
+    public Transaction() {}
 
     @JsonCreator
     public Transaction(@JsonProperty("date") Date date, @JsonProperty("amount") Float amount,
