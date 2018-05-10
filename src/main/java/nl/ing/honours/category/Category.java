@@ -33,7 +33,6 @@ public class Category implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @NaturalId
     private String name;
 
     @OneToMany(mappedBy = "category")
