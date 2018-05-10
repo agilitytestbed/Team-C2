@@ -40,6 +40,9 @@ public class TransactionController {
             Category category = this.categoryService.findByNameAndSession(categoryName, this.sessionService.getCurrent());
             transactions = this.transactionService.findByCategoryAndSession(category, this.sessionService.getCurrent());
         }
+        if ((limit + offset) > transactions.size()) {
+            limit = transactions.size() - offset;
+        }
         if (limit > transactions.size() - offset) {
             throw new InvalidInputException();
         }
@@ -57,7 +60,11 @@ public class TransactionController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity getTransaction(@PathVariable(name = "id") Long id) {
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
-        return new ResponseEntity<>(transaction, HttpStatus.OK);
+        if (transaction != null) {
+            return new ResponseEntity<>(transaction, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
