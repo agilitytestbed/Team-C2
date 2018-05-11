@@ -43,7 +43,7 @@ public class CategoryController {
         if (data.getName() == null) {
             throw new InvalidInputException();
         }
-        Category category = this.categoryService.findByNameAndSession(data.getName(), this.sessionService.getCurrent());
+        Category category = this.categoryService.findBySessionAndName(this.sessionService.getCurrent(), data.getName());
         if (category != null) {
             throw new InvalidInputException();
         }
