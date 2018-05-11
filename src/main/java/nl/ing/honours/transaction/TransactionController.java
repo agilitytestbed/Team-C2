@@ -37,7 +37,7 @@ public class TransactionController {
         if (categoryName == null) {
             transactions = this.transactionService.findBySession(this.sessionService.getCurrent());
         } else {
-            Category category = this.categoryService.findByNameAndSession(categoryName, this.sessionService.getCurrent());
+            Category category = this.categoryService.findBySessionAndName(this.sessionService.getCurrent(), categoryName);
             transactions = this.transactionService.findByCategoryAndSession(category, this.sessionService.getCurrent());
         }
         if ((limit + offset) > transactions.size()) {
