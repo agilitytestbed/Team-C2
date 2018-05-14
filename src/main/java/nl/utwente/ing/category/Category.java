@@ -1,4 +1,4 @@
-package nl.ing.honours.category;
+package nl.utwente.ing.category;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -11,10 +11,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import nl.ing.honours.exceptions.InvalidInputException;
-import nl.ing.honours.session.Session;
-import nl.ing.honours.transaction.Transaction;
-import org.hibernate.annotations.NaturalId;
+import nl.utwente.ing.exceptions.InvalidInputException;
+import nl.utwente.ing.session.Session;
+import nl.utwente.ing.transaction.Transaction;
 
 import javax.persistence.*;
 import java.io.IOException;

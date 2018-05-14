@@ -1,6 +1,6 @@
-package nl.ing.honours.authorization;
+package nl.utwente.ing.authorization;
 
-import nl.ing.honours.session.SessionService;
+import nl.utwente.ing.session.SessionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;

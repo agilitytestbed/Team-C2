@@ -1,4 +1,4 @@
-package nl.ing.honours;
+package nl.utwente.ing;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

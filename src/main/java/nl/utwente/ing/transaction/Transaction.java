@@ -1,8 +1,8 @@
-package nl.ing.honours.transaction;
+package nl.utwente.ing.transaction;
 
 import com.fasterxml.jackson.annotation.*;
-import nl.ing.honours.category.Category;
-import nl.ing.honours.session.Session;
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.session.Session;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;

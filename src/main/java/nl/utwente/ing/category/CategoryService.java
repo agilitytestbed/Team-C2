@@ -1,8 +1,8 @@
-package nl.ing.honours.category;
+package nl.utwente.ing.category;
 
-import nl.ing.honours.session.Session;
-import nl.ing.honours.transaction.Transaction;
-import nl.ing.honours.transaction.TransactionRepository;
+import nl.utwente.ing.session.Session;
+import nl.utwente.ing.transaction.Transaction;
+import nl.utwente.ing.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

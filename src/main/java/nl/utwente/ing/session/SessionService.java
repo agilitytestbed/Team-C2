@@ -1,7 +1,7 @@
-package nl.ing.honours.session;
+package nl.utwente.ing.session;
 
-import nl.ing.honours.category.Category;
-import nl.ing.honours.transaction.Transaction;
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.transaction.Transaction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

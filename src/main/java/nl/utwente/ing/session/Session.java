@@ -1,9 +1,9 @@
-package nl.ing.honours.session;
+package nl.utwente.ing.session;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import nl.ing.honours.category.Category;
-import nl.ing.honours.transaction.Transaction;
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.transaction.Transaction;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

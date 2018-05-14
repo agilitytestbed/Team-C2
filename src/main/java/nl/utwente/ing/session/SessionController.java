@@ -1,4 +1,4 @@
-package nl.ing.honours.session;
+package nl.utwente.ing.session;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

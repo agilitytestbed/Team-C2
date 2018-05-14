@@ -1,6 +1,6 @@
-package nl.ing.honours.category;
+package nl.utwente.ing.category;
 
-import nl.ing.honours.session.Session;
+import nl.utwente.ing.session.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

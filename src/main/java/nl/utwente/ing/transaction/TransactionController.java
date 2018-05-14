@@ -1,10 +1,10 @@
-package nl.ing.honours.transaction;
+package nl.utwente.ing.transaction;
 
-import nl.ing.honours.category.Category;
-import nl.ing.honours.category.CategoryService;
-import nl.ing.honours.exceptions.InvalidInputException;
-import nl.ing.honours.exceptions.ResourceNotFoundException;
-import nl.ing.honours.session.SessionService;
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.category.CategoryService;
+import nl.utwente.ing.exceptions.InvalidInputException;
+import nl.utwente.ing.exceptions.ResourceNotFoundException;
+import nl.utwente.ing.session.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

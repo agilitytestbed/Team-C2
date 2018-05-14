@@ -1,4 +1,4 @@
-package nl.ing.honours.session;
+package nl.utwente.ing.session;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

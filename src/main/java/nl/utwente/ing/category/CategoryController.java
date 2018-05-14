@@ -1,8 +1,8 @@
-package nl.ing.honours.category;
+package nl.utwente.ing.category;
 
-import nl.ing.honours.exceptions.InvalidInputException;
-import nl.ing.honours.exceptions.ResourceNotFoundException;
-import nl.ing.honours.session.SessionService;
+import nl.utwente.ing.exceptions.InvalidInputException;
+import nl.utwente.ing.exceptions.ResourceNotFoundException;
+import nl.utwente.ing.session.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
