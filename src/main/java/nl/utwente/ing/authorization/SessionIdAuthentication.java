@@ -1,4 +1,4 @@
-package nl.ing.honours.authorization;
+package nl.utwente.ing.authorization;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

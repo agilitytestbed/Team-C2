@@ -1,10 +1,10 @@
-package nl.ing.honours.transaction;
+package nl.utwente.ing.transaction;
 
-import nl.ing.honours.category.Category;
-import nl.ing.honours.category.CategoryService;
-import nl.ing.honours.exceptions.InvalidInputException;
-import nl.ing.honours.exceptions.ResourceNotFoundException;
-import nl.ing.honours.session.SessionService;
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.category.CategoryService;
+import nl.utwente.ing.exceptions.InvalidInputException;
+import nl.utwente.ing.exceptions.ResourceNotFoundException;
+import nl.utwente.ing.session.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +37,11 @@ public class TransactionController {
         if (categoryName == null) {
             transactions = this.transactionService.findBySession(this.sessionService.getCurrent());
         } else {
-            Category category = this.categoryService.findByNameAndSession(categoryName, this.sessionService.getCurrent());
+            Category category = this.categoryService.findBySessionAndName(this.sessionService.getCurrent(), categoryName);
             transactions = this.transactionService.findByCategoryAndSession(category, this.sessionService.getCurrent());
+        }
+        if ((limit + offset) > transactions.size()) {
+            limit = transactions.size() - offset;
         }
         if (limit > transactions.size() - offset) {
             throw new InvalidInputException();
@@ -49,12 +52,6 @@ public class TransactionController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity createTransaction(@RequestBody Transaction data) {
-        if (data.getId() != null || data.getCategory() != null) {
-            throw new InvalidInputException();
-        }
-        if (data.getDate() == null || data.getAmount() == null || data.getExternalIBAN() == null || data.getType() == null) {
-            throw new InvalidInputException();
-        }
         data.setSession(sessionService.getCurrent());
         Transaction transaction = transactionService.create(data);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
@@ -63,15 +60,16 @@ public class TransactionController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity getTransaction(@PathVariable(name = "id") Long id) {
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
-        return new ResponseEntity<>(transaction, HttpStatus.OK);
+        if (transaction != null) {
+            return new ResponseEntity<>(transaction, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity updateTransaction(@PathVariable(name = "id") Long id,
                                             @RequestBody Transaction data) {
-        if (data.getId() != null || data.getCategory() != null) {
-            throw new InvalidInputException();
-        }
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
         if (transaction == null) {
             throw new ResourceNotFoundException();
@@ -93,6 +91,9 @@ public class TransactionController {
     @RequestMapping(value = "{id}/category", method = RequestMethod.PATCH)
     public ResponseEntity assignCategory(@PathVariable(name = "id") Long id,
                                          @RequestBody Category data) {
+        if (data.getId() == null) {
+            throw new InvalidInputException();
+        }
         Transaction transaction = this.transactionService.findBySessionAndId(this.sessionService.getCurrent(), id);
         if (transaction == null) {
             throw new ResourceNotFoundException();

@@ -1,4 +1,4 @@
-package nl.ing.honours.exceptions;
+package nl.utwente.ing.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

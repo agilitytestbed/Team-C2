@@ -1,9 +1,8 @@
-package nl.ing.honours.transaction;
+package nl.utwente.ing.transaction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import nl.ing.honours.category.Category;
-import nl.ing.honours.session.Session;
+import com.fasterxml.jackson.annotation.*;
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.session.Session;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -18,10 +17,12 @@ public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date date;
 
     private Float amount;
@@ -31,6 +32,7 @@ public class Transaction implements Serializable {
     private Type type;
 
     @ManyToOne
+    @JsonIgnore
     private Category category;
 
     @ManyToOne
@@ -42,13 +44,23 @@ public class Transaction implements Serializable {
         withdrawal
     }
 
-    public Transaction() {
+    public Transaction() {}
+
+    @JsonCreator
+    public Transaction(@JsonProperty("date") Date date, @JsonProperty("amount") Float amount,
+                       @JsonProperty("externalIBAN") String externalIBAN, @JsonProperty("type") Type type) {
+        this.date = date;
+        this.amount = amount;
+        this.externalIBAN = externalIBAN;
+        this.type = type;
     }
 
+    @JsonProperty("id")
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -85,10 +97,12 @@ public class Transaction implements Serializable {
         this.type = type;
     }
 
+    @JsonProperty("category")
     public Category getCategory() {
         return category;
     }
 
+    @JsonIgnore
     public void setCategory(Category category) {
         this.category = category;
     }

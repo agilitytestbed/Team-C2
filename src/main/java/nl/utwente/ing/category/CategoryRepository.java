@@ -1,6 +1,6 @@
-package nl.ing.honours.category;
+package nl.utwente.ing.category;
 
-import nl.ing.honours.session.Session;
+import nl.utwente.ing.session.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Category findBySessionAndId(Session session, Long id);
 
-    Category findByNameAndSession(String name, Session session);
+    Category findBySessionAndName(Session session, String name);
 }

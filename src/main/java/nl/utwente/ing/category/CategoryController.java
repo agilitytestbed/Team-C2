@@ -1,8 +1,8 @@
-package nl.ing.honours.category;
+package nl.utwente.ing.category;
 
-import nl.ing.honours.exceptions.InvalidInputException;
-import nl.ing.honours.exceptions.ResourceNotFoundException;
-import nl.ing.honours.session.SessionService;
+import nl.utwente.ing.exceptions.InvalidInputException;
+import nl.utwente.ing.exceptions.ResourceNotFoundException;
+import nl.utwente.ing.session.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +33,23 @@ public class CategoryController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity createCategory(@RequestBody Category data) {
-        if (data.getId() != null) {
+        if (data.getId() != null || data.getName() == null) {
+            throw new InvalidInputException();
+        }
+        Category oldCategory = this.categoryService.findBySessionAndName(this.sessionService.getCurrent(), data.getName());
+        if (oldCategory != null) {
+            throw new InvalidInputException();
+        }
+        if (data.getName() == null) {
+            throw new InvalidInputException();
+        }
+        Category category = this.categoryService.findBySessionAndName(this.sessionService.getCurrent(), data.getName());
+        if (category != null) {
             throw new InvalidInputException();
         }
         data.setSession(this.sessionService.getCurrent());
-        Category category = this.categoryService.create(data);
-        return new ResponseEntity<>(category, HttpStatus.CREATED);
+        Category newCategory = this.categoryService.create(data);
+        return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -52,7 +63,7 @@ public class CategoryController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity updateCategory(@PathVariable Long id, @RequestBody Category data) {
-        if (data.getId() != null) {
+        if (data.getName() == null) {
             throw new InvalidInputException();
         }
         Category category = this.categoryService.findBySessionAndId(this.sessionService.getCurrent(), id);
