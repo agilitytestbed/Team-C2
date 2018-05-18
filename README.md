@@ -1,8 +1,6 @@
-# Agility Testbed Team C
+# Agility Testbed Team C2
 
-This repository for the digital payment assistant of Team C, in the Agility Testbed of ING Honours 2018.
-
-The digital payment assistant of Team C for the ING Honours 2018 project.
+The digital payment assistant of Team C2, in the Agility Testbed of ING Honours 2018.
 
 ## Getting Started
 
