@@ -52,8 +52,8 @@ public class TransactionController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity createTransaction(@RequestBody Transaction data) {
-        data.setSession(sessionService.getCurrent());
-        Transaction transaction = transactionService.create(data);
+        data.setSession(this.sessionService.getCurrent());
+        Transaction transaction = this.transactionService.create(data);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 

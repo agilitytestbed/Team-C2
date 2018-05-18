@@ -13,12 +13,10 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import nl.utwente.ing.exceptions.InvalidInputException;
 import nl.utwente.ing.session.Session;
-import nl.utwente.ing.transaction.Transaction;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @Table(name = "Category")
