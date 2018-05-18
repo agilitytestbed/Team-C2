@@ -20,14 +20,6 @@ public class Session implements Serializable {
     @Id
     private String id;
 
-    @OneToMany(mappedBy = "session")
-    @JsonIgnore
-    private List<Transaction> transactions;
-
-    @OneToMany(mappedBy = "session")
-    @JsonIgnore
-    private List<Category> categories;
-
     public Session() {
     }
 
@@ -37,21 +29,5 @@ public class Session implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
     }
 }

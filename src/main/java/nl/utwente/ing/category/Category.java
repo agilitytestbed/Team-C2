@@ -18,7 +18,7 @@ import nl.utwente.ing.transaction.Transaction;
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Category")
@@ -33,10 +33,6 @@ public class Category implements Serializable {
     private Long id;
 
     private String name;
-
-    @OneToMany(mappedBy = "category")
-    @JsonIgnore
-    private List<Transaction> transactions;
 
     @ManyToOne
     @JsonIgnore
@@ -71,14 +67,6 @@ public class Category implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
     }
 
     public Session getSession() {

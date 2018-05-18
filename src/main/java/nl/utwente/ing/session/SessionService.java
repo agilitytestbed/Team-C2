@@ -24,8 +24,6 @@ public class SessionService {
         } while (this.sessionRepository.findById(id) != null);
         Session session = new Session();
         session.setId(id);
-        session.setTransactions(new ArrayList<>());
-        session.setCategories(new ArrayList<>());
         return this.sessionRepository.save(session);
     }
 
