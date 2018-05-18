@@ -17,5 +17,5 @@ This password is currently of no use because the local h2 database resets on eve
 
 ## Authors
 
-* Arwin Sleutjes
-* Casper Plentinger
+* Casper Plentinger (Initial system and extensions)
+* Arwin Sleutjes (Initial system)
