@@ -74,4 +74,14 @@ public class CategoryRuleController {
         return new ResponseEntity<>(updatedCategoryRule, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteCategoryRule(@PathVariable(name = "id") Long id) {
+        CategoryRule categoryRule = this.categoryRuleService.findBySessionAndId(this.sessionService.getCurrent(), id);
+        if (categoryRule == null) {
+            throw new ResourceNotFoundException();
+        }
+        this.categoryRuleService.deleteBySessionAndId(this.sessionService.getCurrent(), id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
