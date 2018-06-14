@@ -3,13 +3,11 @@ package nl.utwente.ing.categoryRule;
 import nl.utwente.ing.category.Category;
 import nl.utwente.ing.category.CategoryService;
 import nl.utwente.ing.exceptions.InvalidInputException;
+import nl.utwente.ing.exceptions.ResourceNotFoundException;
 import nl.utwente.ing.session.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,4 +50,13 @@ public class CategoryRuleController {
         return new ResponseEntity<>(categoryRule, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public ResponseEntity findCategoryRule(@PathVariable(name = "id") Long id) {
+        CategoryRule categoryRule = this.categoryRuleService.findBySessionAndId(this.sessionService.getCurrent(), id);
+        if (categoryRule != null) {
+            return new ResponseEntity<>(categoryRule, HttpStatus.OK);
+        } else {
+            throw new ResourceNotFoundException();
+        }
+    }
 }

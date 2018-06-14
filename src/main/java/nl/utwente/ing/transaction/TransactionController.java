@@ -63,7 +63,7 @@ public class TransactionController {
         if (transaction != null) {
             return new ResponseEntity<>(transaction, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException();
         }
     }
 
