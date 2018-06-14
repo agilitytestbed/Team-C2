@@ -59,4 +59,19 @@ public class CategoryRuleController {
             throw new ResourceNotFoundException();
         }
     }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public ResponseEntity updateCategoryRule(@PathVariable(name = "id") Long id,
+                                             @RequestBody CategoryRule data) {
+        CategoryRule categoryRule = this.categoryRuleService.findBySessionAndId(this.sessionService.getCurrent(), id);
+        Category category = this.categoryService.findBySessionAndId(this.sessionService.getCurrent(), data.getCategory_id());
+        if (categoryRule == null) {
+            throw new ResourceNotFoundException();
+        } else if (category == null) {
+            throw new InvalidInputException();
+        }
+        CategoryRule updatedCategoryRule = this.categoryRuleService.updateBySessionAndId(data, this.sessionService.getCurrent(), id);
+        return new ResponseEntity<>(updatedCategoryRule, HttpStatus.OK);
+    }
+
 }
