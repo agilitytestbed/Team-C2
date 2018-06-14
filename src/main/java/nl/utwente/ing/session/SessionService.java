@@ -24,6 +24,12 @@ public class SessionService {
         return this.sessionRepository.save(session);
     }
 
+    public Session create(String id) {
+        Session session = new Session();
+        session.setId(id);
+        return this.sessionRepository.save(session);
+    }
+
     public Session getCurrent() {
         String id = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return this.sessionRepository.findById(id);

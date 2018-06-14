@@ -1,5 +1,7 @@
 package nl.utwente.ing.session;
 
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,5 +23,11 @@ public class SessionController {
     @RequestMapping(method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createSession() {
         return new ResponseEntity<>(this.sessionService.create(), HttpStatus.CREATED);
+    }
+
+    // create persistent admin session
+    @EventListener(ApplicationReadyEvent.class)
+    public void doSomethingAfterStartup() {
+        sessionService.create("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
     }
 }
