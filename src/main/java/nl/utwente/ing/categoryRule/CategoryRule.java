@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.sun.istack.internal.Nullable;
 import nl.utwente.ing.session.Session;
 import nl.utwente.ing.transaction.Transaction.Type;
+import org.aspectj.lang.annotation.RequiredTypes;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -31,7 +32,6 @@ public class CategoryRule implements Serializable {
 
     private String iBAN;
 
-    @Nullable
     @JsonSerialize(nullsUsing = NullTypeSerializer.class)
     private Type type;
 
@@ -42,8 +42,11 @@ public class CategoryRule implements Serializable {
     public CategoryRule() {}
 
     @JsonCreator
-    public CategoryRule(@JsonProperty("description") String description, @JsonProperty("iBAN") String iBAN, @JsonProperty("type") String type,
-                        @JsonProperty("category_id") Long category_id, @JsonProperty("applyOnHistory") boolean applyOnHistory) {
+    public CategoryRule(@JsonProperty(value = "description", required = true) String description,
+                        @JsonProperty(value = "iBAN", required = true) String iBAN,
+                        @JsonProperty(value = "type", required = true) String type,
+                        @JsonProperty(value = "category_id", required = true) Long category_id,
+                        @JsonProperty(value = "applyOnHistory", required = true) boolean applyOnHistory) {
         this.description = description;
         this.iBAN = iBAN;
         if (!type.equals("")) {

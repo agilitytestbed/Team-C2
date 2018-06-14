@@ -1,18 +1,34 @@
 package nl.utwente.ing.transaction;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.sun.istack.internal.Nullable;
 import nl.utwente.ing.category.Category;
+import nl.utwente.ing.categoryRule.CategoryRule;
+import nl.utwente.ing.exceptions.InvalidInputException;
 import nl.utwente.ing.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.datetime.DateFormatter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 
 
 @Entity
 @Table(name = "Transaction")
-@JsonPropertyOrder({"id", "date", "amount", "externalIBAN", "type", "category"})
+@JsonPropertyOrder({"id", "date", "amount", "description", "externalIBAN", "type", "category"})
 public class Transaction implements Serializable {
 
     @Id
@@ -26,6 +42,9 @@ public class Transaction implements Serializable {
     private Date date;
 
     private Float amount;
+
+    @JsonSerialize(nullsUsing = Transaction.NullTypeSerializer.class)
+    private String description;
 
     private String externalIBAN;
 
@@ -47,10 +66,14 @@ public class Transaction implements Serializable {
     public Transaction() {}
 
     @JsonCreator
-    public Transaction(@JsonProperty("date") Date date, @JsonProperty("amount") Float amount,
-                       @JsonProperty("externalIBAN") String externalIBAN, @JsonProperty("type") Type type) {
+    public Transaction(@JsonProperty(value = "date", required = true) Date date,
+                       @JsonProperty(value = "amount", required = true) Float amount,
+                       @JsonProperty(value = "description") String description,
+                       @JsonProperty(value = "externalIBAN", required = true) String externalIBAN,
+                       @JsonProperty(value = "type", required = true) Type type) {
         this.date = date;
         this.amount = amount;
+        this.description = description;
         this.externalIBAN = externalIBAN;
         this.type = type;
     }
@@ -79,6 +102,14 @@ public class Transaction implements Serializable {
 
     public void setAmount(Float amount) {
         this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getExternalIBAN() {
@@ -114,6 +145,23 @@ public class Transaction implements Serializable {
     public void setSession(Session session) {
         this.session = session;
     }
+
+    public static class NullTypeSerializer extends StdSerializer<Object> {
+
+        public NullTypeSerializer() {
+            this(null);
+        }
+
+        NullTypeSerializer(Class<Object> o) {
+            super(o);
+        }
+
+        @Override
+        public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+            gen.writeString("");
+        }
+    }
+
 }
 
 

@@ -37,12 +37,12 @@ public class Category implements Serializable {
     private Session session;
 
     @JsonCreator
-    public Category(@JsonProperty("id") Long id) {
+    public Category(@JsonProperty(value = "id", required = true) Long id) {
         this.id = id;
     }
 
     @JsonCreator
-    public Category(@JsonProperty("name") String name) {
+    public Category(@JsonProperty(value = "name", required = true) String name) {
         this.name = name;
     }
 
