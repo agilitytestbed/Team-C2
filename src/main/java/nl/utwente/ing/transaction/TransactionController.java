@@ -2,6 +2,7 @@ package nl.utwente.ing.transaction;
 
 import nl.utwente.ing.category.Category;
 import nl.utwente.ing.category.CategoryService;
+import nl.utwente.ing.categoryRule.CategoryRuleService;
 import nl.utwente.ing.exceptions.InvalidInputException;
 import nl.utwente.ing.exceptions.ResourceNotFoundException;
 import nl.utwente.ing.session.SessionService;
@@ -23,10 +24,14 @@ public class TransactionController {
 
     private final CategoryService categoryService;
 
-    public TransactionController(SessionService sessionService, TransactionService transactionService, CategoryService categoryService) {
+    private final CategoryRuleService categoryRuleService;
+
+    public TransactionController(SessionService sessionService, TransactionService transactionService,
+                                 CategoryService categoryService, CategoryRuleService categoryRuleService) {
         this.sessionService = sessionService;
         this.transactionService = transactionService;
         this.categoryService = categoryService;
+        this.categoryRuleService = categoryRuleService;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -53,7 +58,8 @@ public class TransactionController {
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity createTransaction(@RequestBody Transaction data) {
         data.setSession(this.sessionService.getCurrent());
-        Transaction transaction = this.transactionService.create(data);
+        Transaction ruledTransaction = this.categoryRuleService.applyCategoryRule(data);
+        Transaction transaction = this.transactionService.create(ruledTransaction);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 

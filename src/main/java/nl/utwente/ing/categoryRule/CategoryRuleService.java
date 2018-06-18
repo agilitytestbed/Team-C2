@@ -1,6 +1,9 @@
 package nl.utwente.ing.categoryRule;
 
+import nl.utwente.ing.category.Category;
+import nl.utwente.ing.category.CategoryRepository;
 import nl.utwente.ing.session.Session;
+import nl.utwente.ing.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +13,12 @@ import java.util.List;
 public class CategoryRuleService {
 
     private final CategoryRuleRepository categoryRuleRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public CategoryRuleService(CategoryRuleRepository categoryRuleRepository) {
+    public CategoryRuleService(CategoryRuleRepository categoryRuleRepository, CategoryRepository categoryRepository) {
         this.categoryRuleRepository = categoryRuleRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<CategoryRule> findBySession(Session session) {
@@ -40,5 +45,20 @@ public class CategoryRuleService {
     public void deleteBySessionAndId(Session session, Long id) {
         CategoryRule categoryRule = this.categoryRuleRepository.findBySessionAndId(session, id);
         this.categoryRuleRepository.delete(categoryRule);
+    }
+
+    public Transaction applyCategoryRule(Transaction transaction) {
+        List<CategoryRule> rules = this.categoryRuleRepository.findApplicableRules(transaction.getSession(),
+                                                                                   transaction.getDescription(),
+                                                                                   transaction.getExternalIBAN(),
+                                                                                   transaction.getType());
+        for (CategoryRule rule : rules) {
+            Category category = this.categoryRepository.findBySessionAndId(rule.getSession(), rule.getCategory_id());
+            if (category != null) {
+                transaction.setCategory(category);
+                break;
+            }
+        }
+        return transaction;
     }
 }
