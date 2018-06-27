@@ -43,10 +43,10 @@ public class CategoryRuleController {
             throw new InvalidInputException();
         }
         data.setSession(this.sessionService.getCurrent());
-        if (data.isApplyOnHistory()) {
-            // TODO apply categoryRule
-        }
         CategoryRule categoryRule = this.categoryRuleService.create(data);
+        if (categoryRule.isApplyOnHistory()) {
+            this.categoryRuleService.applyOnHistory(categoryRule);
+        }
         return new ResponseEntity<>(categoryRule, HttpStatus.CREATED);
     }
 

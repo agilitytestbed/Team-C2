@@ -4,6 +4,7 @@ import nl.utwente.ing.category.Category;
 import nl.utwente.ing.category.CategoryRepository;
 import nl.utwente.ing.session.Session;
 import nl.utwente.ing.transaction.Transaction;
+import nl.utwente.ing.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,14 @@ public class CategoryRuleService {
 
     private final CategoryRuleRepository categoryRuleRepository;
     private final CategoryRepository categoryRepository;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public CategoryRuleService(CategoryRuleRepository categoryRuleRepository, CategoryRepository categoryRepository) {
+    public CategoryRuleService(CategoryRuleRepository categoryRuleRepository, CategoryRepository categoryRepository,
+                               TransactionRepository transactionRepository) {
         this.categoryRuleRepository = categoryRuleRepository;
         this.categoryRepository = categoryRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public List<CategoryRule> findBySession(Session session) {
@@ -55,10 +59,24 @@ public class CategoryRuleService {
         for (CategoryRule rule : rules) {
             Category category = this.categoryRepository.findBySessionAndId(rule.getSession(), rule.getCategory_id());
             if (category != null) {
-                transaction.setCategory(category);
+                if (transaction.getCategory() != category) {
+                    transaction.setCategory(category);
+                }
                 break;
             }
         }
         return transaction;
+    }
+
+    public void applyOnHistory(CategoryRule categoryRule) {
+        List<Transaction> transactions = this.transactionRepository.findTransactionsByCategoryRule(categoryRule.getSession(),
+                                                                                                   categoryRule.getDescription(),
+                                                                                                   categoryRule.getiBAN(),
+                                                                                                   categoryRule.getType());
+        Category category = this.categoryRepository.findBySessionAndId(categoryRule.getSession(), categoryRule.getCategory_id());
+        for (Transaction transaction : transactions) {
+            transaction.setCategory(category);
+            this.transactionRepository.save(transaction);
+        }
     }
 }
