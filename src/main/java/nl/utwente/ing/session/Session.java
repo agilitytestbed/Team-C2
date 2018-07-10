@@ -15,6 +15,8 @@ public class Session implements Serializable {
     @Id
     private String id;
 
+    private Float balance;
+
     public Session() {
     }
 
@@ -24,5 +26,17 @@ public class Session implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Float balance) {
+        this.balance = balance;
+    }
+
+    public void addToBalance(Float amount) {
+        this.balance += amount;
     }
 }

@@ -25,6 +25,14 @@ public class SessionController {
         return new ResponseEntity<>(this.sessionService.create(), HttpStatus.CREATED);
     }
 
+    /*
+     * Endpoint to retrieve balance from session for testing.
+     */
+    @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getSession() {
+        return new ResponseEntity<>(this.sessionService.getCurrent(), HttpStatus.OK);
+    }
+
     // create persistent admin session
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {

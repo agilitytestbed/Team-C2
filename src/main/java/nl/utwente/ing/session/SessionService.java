@@ -21,12 +21,14 @@ public class SessionService {
         } while (this.sessionRepository.findById(id) != null);
         Session session = new Session();
         session.setId(id);
+        session.setBalance(0.0f);
         return this.sessionRepository.save(session);
     }
 
     public Session create(String id) {
         Session session = new Session();
         session.setId(id);
+        session.setBalance(0.0f);
         return this.sessionRepository.save(session);
     }
 
