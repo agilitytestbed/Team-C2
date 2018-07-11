@@ -5,6 +5,7 @@ import nl.utwente.ing.session.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
@@ -20,4 +21,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             "and lower(t.externalIBAN) like concat('%', lower(?3), '%') " +
             "and (t.type = ?4 or ?4 is null) order by t.id asc")
     List<Transaction> findTransactionsByCategoryRule(Session session, String description, String iban, Transaction.Type type);
+
+    List<Transaction> findTransactionsBySessionAndDateBetweenOrderByDateDescIdDesc(Session session, Date start, Date end);
+
 }
