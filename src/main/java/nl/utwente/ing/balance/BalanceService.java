@@ -57,7 +57,7 @@ public class BalanceService {
                 high = max(high, open);
                 low = min(low, open);
             }
-            history.addFirst(new Candlestick(open, balance, high, low, volume, newDate.toDate()));
+            history.add(new Candlestick(open, balance, high, low, volume, newDate.toDate()));
             dateTime = newDate;
             balance = open;
         }
