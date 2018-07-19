@@ -25,6 +25,10 @@ public class TransactionService {
         return transactionRepository.findBySession(session);
     }
 
+    public Transaction findBySessionAndId(Session session, Long id) {
+        return transactionRepository.findBySessionAndId(session, id);
+    }
+
     public List<Transaction> findByCategoryAndSession(Category category, Session session) {
         return transactionRepository.findByCategoryAndSession(category, session);
     }
@@ -38,10 +42,6 @@ public class TransactionService {
         }
         sessionRepository.save(session);
         return transactionRepository.save(data);
-    }
-
-    public Transaction findBySessionAndId(Session session, Long id) {
-        return transactionRepository.findBySessionAndId(session, id);
     }
 
     public Transaction updateBySessionAndId(Transaction data, Session session, Long id) {
